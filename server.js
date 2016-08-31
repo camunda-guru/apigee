@@ -42,27 +42,13 @@ var entity = {
 var request = require('request');
 app.get('/AddMovie',function(req,res)
 {
+     
 
- 
-
-   
-    var options = {
-        method: 'POST',
-        url: target_url,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(entity)
-        },
-        data:entity
-    };
-
-    client.POST('movies',target_url, options,function(error, usergridResponse) {
+    client.POST('movies',target_url, entity,function(error, usergridResponse) {
          res.jsonp(200, {
 				'success' : "called"
 			}); 
-
-   
-    
+      
 });
 
 
