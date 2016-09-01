@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AssignMessage async="false" continueOnError="false" enabled="true" name="geoCodeInput">
+    <DisplayName>geoCodeInput</DisplayName>
+    <Properties/>
+    <Copy source="request">
+        <Headers/>
+        <QueryParams/>
+        <FormParams/>
+        <Payload/>
+        <Verb/>
+        <StatusCode/>
+        <ReasonPhrase/>
+        <Path/>
+    </Copy>
+    <Remove>
+        <Headers>
+            <Header name="h1"/>
+        </Headers>
+        <QueryParams>
+            <QueryParam name="q1"/>
+        </QueryParams>
+        <FormParams>
+            <FormParam name="f1"/>
+        </FormParams>
+        <Payload/>
+    </Remove>
+    <Add>
+        <Headers/>
+        <QueryParams/>
+        <FormParams/>
+    </Add>
+    <Set>
+        <Headers/>
+        <QueryParams>
+            <QueryParam name="address">{request.queryparam.address}</QueryParam>
+            <QueryParam name="sensor">{request.queryparam.sensor}</QueryParam>
+        </QueryParams>
+        <FormParams/>
+        <!-- <Verb>GET</Verb> -->
+        <Path/>
+    </Set>
+    <AssignVariable>
+        <Name>Address</Name>
+        <Ref>request.queryparam.address</Ref>
+    </AssignVariable>
+    <AssignVariable>
+        <Name>Sensor</Name>
+        <Ref>request.queryparam.sensor</Ref>
+    </AssignVariable>
+    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+    <AssignTo createNew="true" transport="request">GeocodingRequest</AssignTo>
+</AssignMessage>
+
+--------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ServiceCallout async="false" continueOnError="false" enabled="true" name="GeocodeRequest">
+    <DisplayName>GeocodeRequest</DisplayName>
+    <Properties/>
+    <Request clearPayload="true" variable="GeocodingRequest">
+        <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+        <Set/>
+    </Request>
+    <Response>GeoCodingResponse</Response>
+    <HTTPTargetConnection>
+        <Properties/>
+        <URL>https://maps.googleapis.com/maps/api/geocode/json</URL>
+    </HTTPTargetConnection>
+</ServiceCallout>
+------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ExtractVariables async="false" continueOnError="false" enabled="true" name="GecodeExtractor">
+    <DisplayName>GecodeExtractor</DisplayName>
+    <Properties/>
+    <URIPath name="name"/>
+    <QueryParam name="name"/>
+    <Header name="name"/>
+    <FormParam name="name"/>
+    <Variable name="name"/>
+    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+    <Source>GeoCodingResponse</Source>
+    <JSONPayload>
+        <Variable name="latitude">
+            <JSONPath>$.results[0].geometry.location.lat</JSONPath>
+        </Variable>
+        <Variable name="longitude">
+            <JSONPath>$.results[0].geometry.location.lng</JSONPath>
+        </Variable>
+    </JSONPayload>
+    <VariablePrefix>geocoderesponse</VariablePrefix>
+    <XMLPayload stopPayloadProcessing="false">
+        <Namespaces/>
+        <Variable name="name" type="boolean">
+            <XPath>//test/example</XPath>
+        </Variable>
+    </XMLPayload>
+</ExtractVariables>
+-----------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AssignMessage async="false" continueOnError="false" enabled="true" name="Elevationparameter">
+    <DisplayName>Elevationparameter</DisplayName>
+    <Properties/>
+    <Copy source="request">
+        <Headers/>
+        <QueryParams/>
+        <FormParams/>
+        <Payload/>
+        <Verb/>
+        <StatusCode/>
+        <ReasonPhrase/>
+        <Path/>
+    </Copy>
+    <Remove>
+        <Headers>
+            <Header name="h1"/>
+        </Headers>
+        <QueryParams>
+            <QueryParam name="address"/>
+        </QueryParams>
+        <FormParams>
+            <FormParam name="sensor"/>
+        </FormParams>
+        <Payload/>
+    </Remove>
+    <Add>
+        <Headers/>
+        <QueryParams/>
+        <FormParams/>
+    </Add>
+    <Set>
+        <Headers/>
+        <QueryParams>
+            <QueryParam name="locations">{geocoderesponse.latitude},{geocoderesponse.longitude}</QueryParam>
+            <QueryParam name="sensor">false</QueryParam>
+        </QueryParams>
+        <FormParams/>
+        <!-- <Verb>GET</Verb> -->
+        <Path/>
+    </Set>
+    <AssignVariable>
+        <Name>name</Name>
+        <Value/>
+        <Ref/>
+    </AssignVariable>
+    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+    <AssignTo createNew="false" transport="http" type="request"/>
+</AssignMessage>
+-----------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ExtractVariables async="false" continueOnError="false" enabled="true" name="ElevattionExtractor">
+    <DisplayName>ElevattionExtractor</DisplayName>
+    <Properties/>
+    <URIPath name="name"/>
+    <QueryParam name="name"/>
+    <Header name="name"/>
+    <FormParam name="name"/>
+    <Variable name="name"/>
+    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+    <JSONPayload>
+        <Variable name="name">
+            <JSONPath>{example}</JSONPath>
+        </Variable>
+    </JSONPayload>
+    <Source clearPayload="false">request</Source>
+    <VariablePrefix>apigee</VariablePrefix>
+    <XMLPayload stopPayloadProcessing="false">
+        <Namespaces/>
+        <Variable name="elevattionData" type="float">
+            <XPath>//ElevationResponse/result[1]/elevation/text()</XPath>
+        </Variable>
+    </XMLPayload>
+</ExtractVariables>
