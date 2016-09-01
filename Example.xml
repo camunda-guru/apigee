@@ -1,0 +1,26 @@
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:apigee="http://api.apigee.com/wadl/2010/07/"
+             xmlns="http://wadl.dev.java.net/2009/02"
+             xsi:schemaLocation="http://wadl.dev.java.net/2009/02 
+                 http://apigee.com/schemas/wadl-schema.xsd 
+                 http://api.apigee.com/wadl/2010/07/ 
+                 http://apigee.com/schemas/apigee-wadl-extensions.xsd">
+    <resources base="http://jsonplaceholder.typicode.com">
+        <resource path="posts">       
+            <method id="listposts" name="GET" apigee:displayName="List Posts">
+                <apigee:tags>
+                    <apigee:tag primary="true">Articles</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc apigee:url="http://doc.example.com/apis/listposts.html">
+                    Use the GET method to list all articles, filtered by 'topic'
+                </doc>
+                <request>
+                   <param name="posts" required="true" 
+                       type="xsd:string" style="query" default=""/>
+                </request>
+            </method>
+        </resource>
+    </resources>
+</application>
